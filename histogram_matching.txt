@@ -1,0 +1,77 @@
+x = imread('3.jpeg');
+img=rgb2gray(x);
+width=size(img,1);
+height=size(img,2);
+total = height*width;
+
+freq=zeros(256,1);
+pdf=zeros(256,1);
+cdf=zeros(256,1);
+csum=zeros(256,1);
+res=zeros(256,1);
+eq=uint8(zeros(width,height));
+
+for i=1:width
+    for j=1:height
+        value=img(i,j);
+        freq(value+1)=freq(value+1)+1;
+        pdf(value+1)=freq(value+1)/total;
+    end
+end
+
+
+sum=0;
+L=255;
+for i=1:size(pdf)
+    sum=sum+freq(i);
+    csum(i)=sum;
+    cdf(i)=csum(i)/total;
+   
+    
+end
+
+y = imread('6.jpg');
+img2=rgb2gray(y);
+width2=size(img2,1);
+height2=size(img2,2);
+total2 = height2*width2;
+
+freq2=zeros(256,1);
+pdf2=zeros(256,1);
+cdf2=zeros(256,1);
+csum2=zeros(256,1);
+
+for i=1:width2
+    for j=1:height2
+        value2=img2(i,j);
+        freq2(value2+1)=freq2(value2+1)+1;
+        pdf2(value2+1)=freq2(value2+1)/total2;
+    end
+end
+
+sum2=0;
+for i=1:size(pdf2)
+    sum2=sum2+freq2(i);
+    csum2(i)=sum2;
+    cdf2(i)=csum2(i)/total2;
+  
+end
+
+
+
+match =uint8(zeros(width,height));
+for i = 1 : 256
+     d = abs(cdf(i) - cdf2);
+     [a,j] = min(d);
+    match(i) = j-1;
+end
+
+matched = match(img+1);
+
+figure
+subplot(3,2,1),imshow(img);
+subplot(3,2,2),imhist(img);
+subplot(3,2,3),imshow(img2);
+subplot(3,2,4),imhist(img2);
+subplot(3,2,5),imshow(matched);
+subplot(3,2,6),imhist(matched);

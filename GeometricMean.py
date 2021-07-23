@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-img = cv2.imread("images/MinFilter.jpg", 0)
+img = cv2.imread("images/gaussian_hat.jpg", 0)
 kernel = np.ones([3, 3])
 
 i_size = img.shape
@@ -21,13 +21,14 @@ for i in range(i_size[0]):
     for j in range(i_size[1]):
         k = Z[i:i + k_size[0], j:j + k_size[1]]
         k = k.flatten()
-        img2[i, j] = min(k)
+        G_Mean = k.prod() ** (1/len(k))
 
+        img2[i, j] = G_Mean
 
 img2 = np.array(img2, dtype=np.uint8)
 img2 = cv2.hconcat([img, img2])
 
 print('Displaying Image....')
-cv2.imshow('Min Filter', img2)
+cv2.imshow('Geometric Mean Filter', img2)
 cv2.waitKey(0)
 cv2.destroyAllWindows()

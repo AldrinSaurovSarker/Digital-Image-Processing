@@ -3,8 +3,6 @@ import numpy as np
 
 
 def negative(img):
-    # s = L - r - 1
-    # s = output pixel, L = 256, r = input pixel
     max_intensity = 255
     img = max_intensity - img
     negative_img = np.array(img, dtype=np.uint8)
@@ -12,17 +10,16 @@ def negative(img):
 
 
 def log(img):
-    # s = c * log(1 + r)
-    # c = outputMax/log(1+max input pixel from img)
-    c = 255 / np.log(1 + np.max(img))
-    print(np.max(img))
-    log_image = c * (np.log(img + 1))
+    c = 1
+    log_image = c * (np.log10(img + 1))
+    # Changing max intensity of image from log(255) = 2.4 to 255
+    log_image = log_image * (255 / np.log10(255))
     log_image = np.array(log_image, dtype=np.uint8)
     return log_image
 
 
 def inverse_log(img):
-    c = 255 / np.log(1 + np.max(img))
+    c = 50
     log_inverse = np.exp(img / c) - 1
     log_inverse = np.array(log_inverse, dtype=np.uint8)
     return log_inverse
@@ -31,8 +28,9 @@ def inverse_log(img):
 def nth_power(img):
     power_value = float(input("Enter Value of nth Power: "))
 
-    c = 255 / np.power(np.max(img), power_value)
+    c = 1
     power_img = c * np.power(img, power_value)
+    power_img = power_img * (255 / np.power(255, power_value))
     power_img = np.array(power_img, dtype=np.uint8)
     return power_img
 
@@ -41,18 +39,11 @@ def nth_root(img):
     value = float(input("Enter Value of nth Root: "))
     root_value = 1 / value
 
-    c = 255 / np.power(np.max(img), root_value)
+    c = 1
     root_img = c * np.power(img, root_value)
+    root_img = root_img * (255 / np.power(255, root_value))
     root_img = np.array(root_img, dtype=np.uint8)
     return root_img
-
-# def gamma(img):
-#     gamma_value = float(input("Enter Gamma Value: "))
-#     # s = cr^gamma
-#     c = 255 / np.power(np.max(img), gamma_value)
-#     gamma_img = c * np.power(img, gamma_value)
-#     gamma_img = np.array(gamma_img, dtype=np.uint8)
-#     return gamma_img
 
 
 def gray_slice_with_bg(img):
@@ -78,7 +69,6 @@ def gray_slice_without_bg(img):
     lower_pixel = int(input("Enter Lowest Pixel: "))
     upper_pixel = int(input("Enter Highest Pixel: "))
 
-    # without background
     for i in range(row):
         for j in range(column):
             if lower_pixel < img[i, j] < upper_pixel:
@@ -107,7 +97,6 @@ def bit_plane_slice(img):
     for i in range(l):
         final_bit[i] = cv2.hconcat([bit_img[i * 4 + 0], bit_img[i * 4 + 1], bit_img[i * 4 + 2], bit_img[i * 4 + 3]])
 
-    # Vertically concatenate
     final = cv2.vconcat([final_bit[0], final_bit[1]])
 
     return final
@@ -153,9 +142,6 @@ while True:
     elif choice == 5:
         result = nth_root(image_array)
         print_image(result, "nth RootTransformation")
-    # elif choice == 6:
-    #     result = gamma(image_array)
-    #     print_image(result, "Gamma Transformation")
     elif choice == 6:
         result = gray_slice_with_bg(image_array)
         print_image(result, "Gray Slice With Background")
